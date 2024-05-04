@@ -22,33 +22,33 @@ class PermissionRequest extends FormRequest
     public function rules(): array
     {
 
-        if ($this->routeIs('permission.store')) {
-            return [
-                'name' => 'required|string|min:2|max:50|unique:permissions,name',
-            ];
-        }
+        // if ($this->routeIs('permission.store')) {
+        //     return [
+        //         'name' => 'required|string|min:2|max:50|unique:permissions,name',
+        //     ];
+        // }
 
-        if ($this->routeIs('permission.update')) {
-            $permissionId = $this->route('id');
+        // if ($this->routeIs('permission.update')) {
+        //     $permissionId = $this->route('id');
 
-            return [
-                'name' => 'required|string|min:2|max:50|unique:permissions,name,'.$permissionId,
-            ];
-        }
+        //     return [
+        //         'name' => 'required|string|min:2|max:50|unique:permissions,name,'.$permissionId,
+        //     ];
+        // }
 
-        if ($this->routeIs('permission.user-permission-assign')) {
-            return [
-                'user_id' => 'required|integer',
-                'permissions' => 'required|array|min:1',
-            ];
-        }
+        // if ($this->routeIs('permission.user-permission-assign')) {
+        //     return [
+        //         'user_id' => 'required|integer',
+        //         'permissions' => 'required|array|min:1',
+        //     ];
+        // }
 
-        if ($this->routeIs('permission.user-permission-remove')) {
-            return [
-                'user_id' => 'required|integer',
-                'permission_id' => 'required|integer',
-            ];
-        }
+        // if ($this->routeIs('permission.user-permission-remove')) {
+        //     return [
+        //         'user_id' => 'required|integer',
+        //         'permission_id' => 'required|integer',
+        //     ];
+        // }
 
         return [];
     }

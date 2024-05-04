@@ -21,49 +21,49 @@ class RoleRequest extends FormRequest
      */
     public function rules(): array
     {
-        if ($this->routeIs('role.store')) {
-            return [
-                'name' => 'required|string|max:55|unique:roles,name',
-                'permissions' => 'nullable|array',
-            ];
-        }
+        // if ($this->routeIs('role.store')) {
+        //     return [
+        //         'name' => 'required|string|max:55|unique:roles,name',
+        //         'permissions' => 'nullable|array',
+        //     ];
+        // }
 
-        if ($this->routeIs('role.update')) {
-            $roleId = $this->route('id');
+        // if ($this->routeIs('role.update')) {
+        //     $roleId = $this->route('id');
 
-            return [
-                'name' => 'required|string|max:55|unique:roles,name,'.$roleId,
-                'permissions' => 'nullable|array',
-            ];
-        }
+        //     return [
+        //         'name' => 'required|string|max:55|unique:roles,name,'.$roleId,
+        //         'permissions' => 'nullable|array',
+        //     ];
+        // }
 
-        if ($this->routeIs('role.assign-user-role')) {
-            return [
-                'user_id' => 'required|integer',
-                'role_id' => 'required|integer',
-            ];
-        }
+        // if ($this->routeIs('role.assign-user-role')) {
+        //     return [
+        //         'user_id' => 'required|integer',
+        //         'role_id' => 'required|integer',
+        //     ];
+        // }
 
-        if ($this->routeIs('role.remove-user-role')) {
-            return [
-                'user_id' => 'required|integer',
-                'role_id' => 'required|integer',
-            ];
-        }
+        // if ($this->routeIs('role.remove-user-role')) {
+        //     return [
+        //         'user_id' => 'required|integer',
+        //         'role_id' => 'required|integer',
+        //     ];
+        // }
 
-        if ($this->routeIs('role.assign-role-permission')) {
-            return [
-                'role_id' => 'required|integer',
-                'permissions' => 'required|array|min:1',
-            ];
-        }
+        // if ($this->routeIs('role.assign-role-permission')) {
+        //     return [
+        //         'role_id' => 'required|integer',
+        //         'permissions' => 'required|array|min:1',
+        //     ];
+        // }
 
-        if ($this->routeIs('role.remove-role-permission')) {
-            return [
-                'role_id' => 'required|integer',
-                'permission_id' => 'required|integer',
-            ];
-        }
+        // if ($this->routeIs('role.remove-role-permission')) {
+        //     return [
+        //         'role_id' => 'required|integer',
+        //         'permission_id' => 'required|integer',
+        //     ];
+        // }
 
         return [];
     }

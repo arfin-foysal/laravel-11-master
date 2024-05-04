@@ -2,7 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\RoleRequest;
+use App\Http\Requests\AssignRolePermissionRequest;
+use App\Http\Requests\AssignUserRoleRequest;
+use App\Http\Requests\RemoveRolePermissionRequest;
+use App\Http\Requests\RemoveUserRoleRequest;
+use App\Http\Requests\StoreRoleRequest;
+use App\Http\Requests\UpdateRoleRequest;
 use App\Http\Traits\HelperTrait;
 use App\Services\RoleService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -34,7 +39,7 @@ class RoleController extends Controller
         }
     }
 
-    public function store(RoleRequest $request)
+    public function store(StoreRoleRequest $request)
     {
 
         try {
@@ -66,7 +71,7 @@ class RoleController extends Controller
         }
     }
 
-    public function update(RoleRequest $request, $id)
+    public function update(UpdateRoleRequest $request, $id)
     {
 
         try {
@@ -101,7 +106,7 @@ class RoleController extends Controller
         }
     }
 
-    public function assignRolePermission(RoleRequest $request)
+    public function assignRolePermission(AssignRolePermissionRequest $request)
     {
 
         try {
@@ -118,7 +123,7 @@ class RoleController extends Controller
 
     }
 
-    public function removeRolePermission(RoleRequest $request)
+    public function removeRolePermission(RemoveRolePermissionRequest $request)
     {
 
         try {
@@ -135,7 +140,7 @@ class RoleController extends Controller
 
     }
 
-    public function assignUserRole(RoleRequest $request)
+    public function assignUserRole(AssignUserRoleRequest $request)
     {
 
         try {
@@ -152,7 +157,7 @@ class RoleController extends Controller
 
     }
 
-    public function removeUserRole(RoleRequest $request)
+    public function removeUserRole(RemoveUserRoleRequest $request)
     {
 
         try {

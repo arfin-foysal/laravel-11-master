@@ -21,7 +21,9 @@ return Application::configure(basePath: dirname(__DIR__))
         }
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->group('api', [
+            \G4T\Swagger\Middleware\SetJsonResponseMiddleware::class,
+        ]);
     })
 
     ->withExceptions(function (Exceptions $exceptions) {

@@ -19,7 +19,8 @@
 6. Create a database and update the `.env` file
 7. Run `php artisan migrate` or `php artisan migrate:fresh --seed`
 8. Run `php artisan serve`
-9. Open Postman and test the API
+9. Open Postman and import the collection from the `postman` directory
+10. Swagger API Documentation: `http://localhost:8000/swagger/documentation`
 
 
 

@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\PermissionRequest;
+use App\Http\Requests\StorePermissionRequest;
+use App\Http\Requests\UpdatePermissionRequest;
+use App\Http\Requests\UserPermissionAssignRequest;
+use App\Http\Requests\UserPermissionRemoveRequest;
 use App\Http\Traits\HelperTrait;
 use App\Services\PermissionService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -48,7 +51,7 @@ class PermissionController extends Controller
         }
     }
 
-    public function store(PermissionRequest $request)
+    public function store(StorePermissionRequest $request)
     {
         try {
             $permission = $this->permissionService->create($request);
@@ -64,7 +67,7 @@ class PermissionController extends Controller
         }
     }
 
-    public function update(PermissionRequest $request, $id)
+    public function update(UpdatePermissionRequest $request, $id)
     {
         try {
             $permission = $this->permissionService->update($request, $id);
@@ -99,7 +102,7 @@ class PermissionController extends Controller
         }
     }
 
-    public function userPermissionAssign(PermissionRequest $request)
+    public function userPermissionAssign(UserPermissionAssignRequest $request)
     {
         try {
             $permission = $this->permissionService->userPermissionAssign($request);
@@ -116,7 +119,7 @@ class PermissionController extends Controller
         }
     }
 
-    public function userPermissionRemove(PermissionRequest $request)
+    public function userPermissionRemove(UserPermissionRemoveRequest $request)
     {
         try {
             $permission = $this->permissionService->userPermissionRemove($request);
