@@ -2,12 +2,11 @@
 
 namespace App\Services;
 
-use App\Models\AdminUser;
 use App\Models\CustomRole;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\DB;
 
 class RoleService
 {
@@ -34,8 +33,8 @@ class RoleService
             $searchValue = $request->input('search');
             if ($searchValue) {
                 $role->where(function ($query) use ($searchValue) {
-                    $query->whereRaw('LOWER(id) LIKE ?', ['%' . strtolower($searchValue) . '%'])
-                        ->orWhereRaw('LOWER(name) LIKE ?', ['%' . strtolower($searchValue) . '%']);
+                    $query->whereRaw('LOWER(id) LIKE ?', ['%'.strtolower($searchValue).'%'])
+                        ->orWhereRaw('LOWER(name) LIKE ?', ['%'.strtolower($searchValue).'%']);
                 });
             }
 
@@ -94,7 +93,6 @@ class RoleService
         }
     }
 
-
     public function update(Request $request, $id)
     {
 
@@ -132,17 +130,56 @@ class RoleService
             }
 
             $role = CustomRole::find($id);
-            if (!$role) {
+            if (! $role) {
                 throw new \Exception('Record not found.');
             }
 
             $role->permissions()->detach();
             $response = $role->delete();
 
-
             DB::commit();
 
             return $response;
+        } catch (\Exception $th) {
+            DB::rollback();
+            throw $th;
+        }
+    }
+
+    public function assignRolePermission(Request $request)
+    {
+
+        DB::beginTransaction();
+        try {
+            $role = CustomRole::find($request->role_id);
+            if (! $role) {
+                throw new \Exception('Role not found.');
+            }
+            $role->syncPermissions($request->permissions);
+
+            DB::commit();
+
+            return $role;
+        } catch (\Exception $th) {
+            DB::rollback();
+            throw $th;
+        }
+    }
+
+    public function removeRolePermission(Request $request)
+    {
+
+        DB::beginTransaction();
+        try {
+            $role = CustomRole::find($request->role_id);
+            if (! $role) {
+                throw new \Exception('Role not found.');
+            }
+            $role->revokePermissionTo($request->permission_id);
+
+            DB::commit();
+
+            return $role;
         } catch (\Exception $th) {
             DB::rollback();
             throw $th;
@@ -155,12 +192,34 @@ class RoleService
         DB::beginTransaction();
         try {
             $user = User::find($request->user_id);
-            if (!$user) {
+            if (! $user) {
                 throw new \Exception('User not found.');
             }
             $role = CustomRole::find($request->role_id);
 
             $user->syncRoles($role->name);
+
+            DB::commit();
+
+            return $user;
+        } catch (\Exception $th) {
+            DB::rollback();
+            throw $th;
+        }
+    }
+
+    public function removeUserRole(Request $request)
+    {
+
+        DB::beginTransaction();
+        try {
+            $user = User::find($request->user_id);
+            if (! $user) {
+                throw new \Exception('User not found.');
+            }
+            $role = CustomRole::find($request->role_id);
+
+            $user->removeRole($role->name);
 
             DB::commit();
 

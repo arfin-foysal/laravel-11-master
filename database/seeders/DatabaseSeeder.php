@@ -19,8 +19,6 @@ class DatabaseSeeder extends Seeder
             'name' => 'system-admin',
             'email' => 'systemadmin@example.com',
         ]);
-            
-        
 
         $this->call(RoleAndPermissionSeeder::class);
     }

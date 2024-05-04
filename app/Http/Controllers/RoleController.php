@@ -12,7 +12,6 @@ use Illuminate\Validation\ValidationException;
 
 class RoleController extends Controller
 {
-
     use HelperTrait;
 
     private $roleService;
@@ -21,20 +20,19 @@ class RoleController extends Controller
     {
         $this->roleService = $roleService;
     }
+
     public function index(Request $request)
     {
 
-    
         try {
             $roles = $this->roleService->index($request);
+
             return $this->successResponse($roles, 'Roles retrieved successfully', Response::HTTP_OK);
-        
+
         } catch (\Throwable $th) {
             return $this->errorResponse([], $th->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-
-
 
     public function store(RoleRequest $request)
     {
@@ -53,7 +51,6 @@ class RoleController extends Controller
         }
     }
 
-
     public function show($id)
     {
         try {
@@ -68,7 +65,6 @@ class RoleController extends Controller
             return $this->errorResponse([], $th->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-
 
     public function update(RoleRequest $request, $id)
     {
@@ -89,7 +85,6 @@ class RoleController extends Controller
         }
     }
 
-
     public function destroy($id)
     {
 
@@ -106,12 +101,64 @@ class RoleController extends Controller
         }
     }
 
-    public function assignUserRole (RoleRequest $request) {
+    public function assignRolePermission(RoleRequest $request)
+    {
+
+        try {
+            $role = $this->roleService->assignRolePermission($request);
+
+            return $this->successResponse($role, 'Permission assigned successfully', Response::HTTP_OK);
+        } catch (ModelNotFoundException $e) {
+
+            return $this->errorResponse([], $e->getMessage(), Response::HTTP_NOT_FOUND);
+        } catch (\Throwable $th) {
+
+            return $this->errorResponse([], $th->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+    public function removeRolePermission(RoleRequest $request)
+    {
+
+        try {
+            $role = $this->roleService->removeRolePermission($request);
+
+            return $this->successResponse($role, 'Permission removed successfully', Response::HTTP_OK);
+        } catch (ModelNotFoundException $e) {
+
+            return $this->errorResponse([], $e->getMessage(), Response::HTTP_NOT_FOUND);
+        } catch (\Throwable $th) {
+
+            return $this->errorResponse([], $th->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+    public function assignUserRole(RoleRequest $request)
+    {
 
         try {
             $role = $this->roleService->assignUserRole($request);
 
             return $this->successResponse($role, 'Role assigned successfully', Response::HTTP_OK);
+        } catch (ModelNotFoundException $e) {
+
+            return $this->errorResponse([], $e->getMessage(), Response::HTTP_NOT_FOUND);
+        } catch (\Throwable $th) {
+
+            return $this->errorResponse([], $th->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+    public function removeUserRole(RoleRequest $request)
+    {
+
+        try {
+            $role = $this->roleService->removeUserRole($request);
+
+            return $this->successResponse($role, 'Role removed successfully', Response::HTTP_OK);
         } catch (ModelNotFoundException $e) {
 
             return $this->errorResponse([], $e->getMessage(), Response::HTTP_NOT_FOUND);

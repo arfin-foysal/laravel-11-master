@@ -2,101 +2,91 @@
 
 namespace App\Services;
 
-use App\Models\AdminUser;
 use App\Models\User;
+use Illuminate\Pagination\Paginator;
 use Spatie\Permission\Models\Permission;
 
 class PermissionService
 {
-
     public function __construct()
     {
     }
 
-    public function getAllWithPagination($request)
+    public function index($request)
     {
-        $permission = Permission::select('*');
 
-        if ($request->has('sortBy') && $request->has('sortDesc')) {
-            $sortBy = $request->query('sortBy');
+        try {
+            $permission = Permission::select('*');
+            // Select specific columns
+            $columns = ['id', 'name']; // Define the columns you want to select
+            $permission->select($columns);
 
-            $sortDesc = $request->query('sortDesc') == true ? 'desc' : 'asc';
+            // Sorting
+            $sortBy = $request->input('sortBy', 'id');
+            $sortDesc = $request->boolean('sortDesc') ? 'desc' : 'asc';
+            $permission->orderBy($sortBy, $sortDesc);
 
-            if ($sortBy === 'name') {
-                $permission = $permission->orderBy('name', $sortDesc);
-            } else {
-                $permission = $permission->orderBy($sortBy, $sortDesc);
+            // Searching
+            $searchValue = $request->input('search');
+            if ($searchValue) {
+                $permission->where(function ($query) use ($searchValue) {
+                    $query->whereRaw('LOWER(id) LIKE ?', ['%'.strtolower($searchValue).'%'])
+                        ->orWhereRaw('LOWER(name) LIKE ?', ['%'.strtolower($searchValue).'%']);
+                });
             }
-        } else {
-            $permission = $permission->orderBy('id', 'desc');
+
+            // Check for pagination
+            $pagination = $request->boolean('pagination', true); // Default to true if not specified
+
+            if ($pagination) {
+                // Paginated data
+                $itemsPerPage = $request->input('itemsPerPage', 10);
+
+                // Manually paginate the results
+                $currentPage = Paginator::resolveCurrentPage('page');
+                $courseTypeResults = $permission->paginate($itemsPerPage, $columns, 'page', $currentPage);
+
+                return $courseTypeResults;
+            }
+
+            // All data (no pagination)
+            return $permission->get();
+        } catch (\Throwable $th) {
+            throw $th;
         }
-
-        $searchValue = $request->input('search');
-        $itemsPerPage = 10;
-
-        if ($searchValue) {
-
-            $permission->where(function ($query) use ($searchValue) {
-                $query->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($searchValue) . '%']);
-                 
-            });
-
-            if ($request->has('itemsPerPage')) {
-                $itemsPerPage = $request->get('itemsPerPage');
-
-                return $permission->paginate($itemsPerPage, ['*'], $request->get('page'));
-            }
-        } else {
-            $itemsPerPage = 10;
-
-            if ($request->has('itemsPerPage')) {
-                $itemsPerPage = $request->get('itemsPerPage');
-
-                return $permission->paginate($itemsPerPage);
-            }
-        }
-
-        return $permission->paginate($itemsPerPage);
     }
 
- 
-
-    public function getAll()
+    public function show($id)
     {
         try {
-            $permissions = Permission::latest()->get();
+            $permission = Permission::findOrFail($id);
+
+            return $permission;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function create($request)
+    {
+        try {
+
+            // $permission = new Permission();
+            // $permission->name = $request->name;
+            // $permission->save();
+
+            //bulk insert
+            $permissions = [];
+            foreach ($request->names as $name) {
+                $permissions[] = ['name' => $name, 'guard_name' => 'api', 'created_at' => now()];
+            }
+            Permission::insert($permissions);
+
             return $permissions;
         } catch (\Throwable $th) {
             throw $th;
         }
     }
-
-    public function edit($id)
-    {
-        try {
-            $permission = Permission::findOrFail($id);
-            return $permission;
-        } catch (\Throwable $th) {
-            throw $th;
-        }
-    }
-
-
-    public function create($request)
-    {
-        try {
-            
-            $permission = new Permission();
-            $permission->name = $request->name;
-            $permission->save();
-
-            return $permission;
-
-        } catch (\Throwable $th) {
-            throw $th;
-        }
-    }
-
 
     public function update($request, $id)
     {
@@ -114,10 +104,16 @@ class PermissionService
     public function delete($id)
     {
         try {
-            $permission = Permission::where('id', $id)->delete();
-            if (!$permission) {
+            $permission = Permission::where('id', $id)->first();
+            // Check if assigned to any role and any user
+            if ($permission->roles()->count() > 0 || $permission->users()->count() > 0) {
+                throw new \Exception('Permission is assigned to a role or user.');
+            }
+            if (! $permission) {
                 throw new \Exception('Record not found.');
             }
+            $permission->delete();
+
             return $permission;
         } catch (\Throwable $th) {
             throw $th;
@@ -129,12 +125,25 @@ class PermissionService
         try {
             $user = User::findOrFail($request->user_id);
             $user->syncPermissions($request->permissions);
+
             return $user;
         } catch (\Throwable $th) {
             throw $th;
         }
     }
 
-    
+    public function userPermissionRemove($request)
+    {
+        try {
+            $user = User::findOrFail($request->user_id);
+            $permission = Permission::where('id', $request->permission_id)
+                ->where('guard_name', 'api')
+                ->firstOrFail();
+            $user->revokePermissionTo($permission->name);
 
+            return $user;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
 }

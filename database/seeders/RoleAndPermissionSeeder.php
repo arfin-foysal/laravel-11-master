@@ -3,10 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\CustomRole;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
 
 class RoleAndPermissionSeeder extends Seeder
 {
@@ -16,27 +14,24 @@ class RoleAndPermissionSeeder extends Seeder
     public function run(): void
     {
 
-        Permission::create(['name'=> 'login']);
-        Permission::create(['name'=> 'register']);
-        Permission::create(['name'=> 'create']);
-        Permission::create(['name'=> 'read']);
-        Permission::create(['name'=> 'update']);
-        Permission::create(['name'=> 'delete']);
-        
+        Permission::create(['name' => 'login']);
+        Permission::create(['name' => 'register']);
+        Permission::create(['name' => 'create']);
+        Permission::create(['name' => 'read']);
+        Permission::create(['name' => 'update']);
+        Permission::create(['name' => 'delete']);
 
         $systemAdmin = CustomRole::create(['name' => 'system-admin']);
         $superAdmin = CustomRole::create(['name' => 'super-admin']);
-        $admin = CustomRole::create(["name" => "admin"]);
-        $user = CustomRole::create(["name" => "user"]);
+        $admin = CustomRole::create(['name' => 'admin']);
+        $user = CustomRole::create(['name' => 'user']);
 
-    
         $systemAdmin->givePermissionTo('login');
         $systemAdmin->givePermissionTo('register');
         $systemAdmin->givePermissionTo('create');
         $systemAdmin->givePermissionTo('read');
         $systemAdmin->givePermissionTo('update');
         $systemAdmin->givePermissionTo('delete');
-    
-        
+
     }
 }

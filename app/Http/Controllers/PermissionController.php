@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use App\Http\Requests\PermissionRequest;
 use App\Http\Traits\HelperTrait;
 use App\Services\PermissionService;
-use App\Http\Controllers\Controller;
-use App\Http\Resources\PermissionResource;
-use App\Http\Requests\Admin\PermissionRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
+
 class PermissionController extends Controller
 {
     use HelperTrait;
@@ -25,38 +24,21 @@ class PermissionController extends Controller
     public function index(Request $request)
     {
         try {
-            $pagination = $request->get('pagination', true);
+            $permissions = $this->permissionService->index($request);
 
-            if ($pagination == true) {
+            return $this->successResponse($permissions, 'Permission list', Response::HTTP_OK);
 
-                $permission = $this->permissionService->getAllWithPagination($request);
-
-                return $this->successResponseWithPagination(
-                    PermissionResource::collection($permission),
-                    'Permission list',
-                    Response::HTTP_OK
-                );
-            } else {
-
-                $permission = $this->permissionService->getAll();
-                return $this->successResponseWithPagination(
-                    PermissionResource::collection($permission),
-                    'Permission list',
-                    Response::HTTP_OK
-                );
-            }
         } catch (\Throwable $th) {
             return $this->errorResponse([], $th->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
-    public function edit($id)
+    public function show($id)
     {
         try {
-            $permission = $this->permissionService->edit($id);
-            $permissionResource = new PermissionResource($permission);
+            $permission = $this->permissionService->show($id);
 
-            return $this->successResponse($permissionResource, 'Permission detail', Response::HTTP_OK);
+            return $this->successResponse($permission, 'Permission detail', Response::HTTP_OK);
         } catch (ModelNotFoundException $e) {
 
             return $this->errorResponse([], $e->getMessage(), Response::HTTP_NOT_FOUND);
@@ -71,13 +53,14 @@ class PermissionController extends Controller
         try {
             $permission = $this->permissionService->create($request);
 
-            return $this->successResponse([], 'Permission created', Response::HTTP_CREATED);
+            return $this->successResponse($permission, 'Permission created', Response::HTTP_CREATED);
         } catch (ValidationException $e) {
 
             return $this->errorResponse($e->errors(), $e->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY);
         } catch (\Throwable $th) {
 
-            return $this->errorResponse([], $th->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            return $this->errorResponse(
+                $th->getMessage(), $th->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -86,7 +69,7 @@ class PermissionController extends Controller
         try {
             $permission = $this->permissionService->update($request, $id);
 
-            return $this->successResponse([], 'Permission updated', Response::HTTP_OK);
+            return $this->successResponse($permission, 'Permission updated', Response::HTTP_OK);
         } catch (ValidationException $e) {
 
             return $this->errorResponse($e->errors(), $e->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -109,24 +92,41 @@ class PermissionController extends Controller
         } catch (ModelNotFoundException $e) {
 
             return $this->errorResponse([], $e->getMessage(), Response::HTTP_NOT_FOUND);
-            
+
         } catch (\Throwable $th) {
 
             return $this->errorResponse([], $th->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
-    public function userPermissionAssign (PermissionRequest $request)
+    public function userPermissionAssign(PermissionRequest $request)
     {
         try {
             $permission = $this->permissionService->userPermissionAssign($request);
 
-            return $this->successResponse([], 'Permission assigned', Response::HTTP_OK);
+            return $this->successResponse($permission, 'Permission assigned', Response::HTTP_OK);
 
         } catch (ModelNotFoundException $e) {
 
             return $this->errorResponse([], $e->getMessage(), Response::HTTP_NOT_FOUND);
-            
+
+        } catch (\Throwable $th) {
+
+            return $this->errorResponse([], $th->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function userPermissionRemove(PermissionRequest $request)
+    {
+        try {
+            $permission = $this->permissionService->userPermissionRemove($request);
+
+            return $this->successResponse($permission, 'Permission removed', Response::HTTP_OK);
+
+        } catch (ModelNotFoundException $e) {
+
+            return $this->errorResponse([], $e->getMessage(), Response::HTTP_NOT_FOUND);
+
         } catch (\Throwable $th) {
 
             return $this->errorResponse([], $th->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);

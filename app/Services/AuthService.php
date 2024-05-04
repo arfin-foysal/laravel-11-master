@@ -47,13 +47,24 @@ class AuthService
                 throw new \Exception('Invalid credentials');
             }
 
+            $user = User::where('id', auth()->id())->first();
+            $role = $user->roles()->first()->name ?? null;
+            $permissions = $user->getAllPermissions()->pluck('name');
+            $extraPermissions = $user->getDirectPermissions()->pluck('name');
+            $rolePermissions = $user->getPermissionsViaRoles()->pluck('name');
+            $expiresIn = auth()->factory()->getTTL() * 60;
+
             return [
                 'token_type' => 'bearer',
                 'token' => $token,
-                'expires_in' => auth()->factory()->getTTL() * 60,
+                'expires_in' => $expiresIn,
+                'role' => $role,
+                'permissions' => $permissions,
+                'role_permissions' => $rolePermissions,
+                'extra_permissions' => $extraPermissions,
                 'user' => auth()->user(),
-            ];
 
+            ];
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -72,7 +83,6 @@ class AuthService
                 // "user_id" => request()->user()->id,
                 // "email" => request()->user()->email
             ];
-
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -82,11 +92,12 @@ class AuthService
     {
         try {
             $token = auth()->refresh();
+            $expiresIn = auth()->factory()->getTTL() * 60;
 
             return [
                 'token_type' => 'bearer',
                 'token' => $token,
-                'expires_in' => auth()->factory()->getTTL() * 60,
+                'expires_in' => $expiresIn,
             ];
         } catch (\Throwable $th) {
             throw $th;
