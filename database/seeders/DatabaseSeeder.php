@@ -15,15 +15,25 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        $user = User::factory()->create([
+        $systemAdmin = User::factory()->create([
             'name' => 'system-admin',
             'email' => 'systemadmin@example.com',
             'password' => bcrypt('password'),
         ]);
 
+        $superAdmin = User::factory()->create(
+            [
+                'name' => 'super-admin',
+                'email' => 'superadmin@example.com',
+                'password' => bcrypt('password'),
+            ],
+        );
+
         $this->call(RoleAndPermissionSeeder::class);
 
-        $user->assignRole('system-admin');
-        $user->givePermissionTo('role-and-permission-management');
+        $systemAdmin->assignRole('system-admin');
+        $superAdmin->assignRole('super-admin');
+
+        $systemAdmin->givePermissionTo('role-and-permission-management');
     }
 }
