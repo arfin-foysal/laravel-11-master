@@ -24,5 +24,6 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleAndPermissionSeeder::class);
 
         $user->assignRole('system-admin');
+        $user->givePermissionTo('role-and-permission-management');
     }
 }

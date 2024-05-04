@@ -14,6 +14,7 @@ class RoleAndPermissionSeeder extends Seeder
     public function run(): void
     {
 
+        Permission::create(['name' => 'role-and-permission-management']);
         Permission::create(['name' => 'login']);
         Permission::create(['name' => 'register']);
         Permission::create(['name' => 'create']);
