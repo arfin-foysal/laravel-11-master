@@ -1,6 +1,13 @@
-## Laravel 11 JWT API Authentication
+## Laravel 11 API Starter Kit with JWT Auth, Role, Permission & User Management
 
-This is a simple Laravel 11 JWT API Authentication with Laravel 11 and JWT
+## Features
+- JWT Authentication
+- Role Based Authentication
+- User Management
+- Role Management
+- Permission Management
+- Docker Support
+
 
 ## Instructions
 
