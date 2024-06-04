@@ -17,10 +17,11 @@
 4. Run `php artisan key:generate`
 5. Run `php artisan jwt:secret`
 6. Create a database and update the `.env` file
-7. Run `php artisan migrate` or `php artisan migrate:fresh --seed`
-8. Run `php artisan serve`
-9. Open Postman and import the collection from the `postman` directory
-10. Swagger API Documentation: `http://localhost:8000/swagger/documentation`
+7. if use sqlite Database touch /home/foysal/Development/bacbon/laravel-11-master/database/database.sqlite
+8. Run `php artisan migrate` or `php artisan migrate:fresh --seed`
+9. Run `php artisan serve`
+10. Open Postman and import the collection from the `postman` directory
+11. Swagger API Documentation: `http://localhost:8000/swagger/documentation`
 
 
 
