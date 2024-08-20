@@ -2,11 +2,16 @@
 
 namespace App\Http\Traits;
 
-use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Pagination\Paginator;
 
 trait HelperTrait
 {
+    
     protected function successResponse($data, $message, $statusCode = 200): JsonResponse
     {
         $array = [
@@ -37,6 +42,80 @@ trait HelperTrait
             'message' => 'Unauthorized.',
             'status' => false,
         ], 401);
+    }
+
+    protected function codeGenerator($prefix, $model)
+    {
+        if ($model::count() == 0) {
+            $newId = $prefix.'-'.str_pad(1, 5, 0, STR_PAD_LEFT);
+
+            return $newId;
+        }
+        $lastId = $model::orderBy('id', 'desc')->first()->id;
+        $lastIncrement = substr($lastId, -3);
+        $newId = $prefix.'-'.str_pad($lastIncrement + 1, 5, 0, STR_PAD_LEFT);
+        $newId++;
+
+        return $newId;
+    }
+
+
+    private function applySorting($query, Request $request): void
+    {
+        $sortBy = $request->input('sortBy', 'id');
+        $sortDesc = $request->boolean('sortDesc', true) ? 'desc' : 'asc';
+        $query->orderBy($sortBy, $sortDesc);
+    }
+
+    private function applySearch($query, ?string $searchValue, array $searchKeys): void
+    {
+        if ($searchValue) {
+            $query->where(function ($query) use ($searchValue, $searchKeys) {
+                foreach ($searchKeys as $key) {
+                    $query->orWhereRaw('LOWER('.$key.') LIKE ?', ['%'.strtolower($searchValue).'%']);
+                }
+            });
+        }
+    }
+
+
+    private function paginateOrGet($query, Request $request): Collection|LengthAwarePaginator|array
+    {
+        if ($request->boolean('pagination', true)) {
+            $itemsPerPage = $request->input('itemsPerPage', 10);
+            $currentPage = Paginator::resolveCurrentPage('page');
+
+            return $query->paginate($itemsPerPage, ['*'], 'page', $currentPage);
+        }
+
+        return $query->get();
+    }
+
+    private function applyFilters($query, $request, $filters)
+    {
+        foreach ($filters as $key => $operator) {
+            if ($request->filled($key)) {
+                $value = $request->input($key);
+                switch ($operator) {
+                    case '=':
+                        $query->where($key, '=', $value);
+                        break;
+                    case 'like':
+                        $query->where($key, 'like', '%'.$value.'%');
+                        break;
+                    case '>':
+                    case '<':
+                    case '>=':
+                    case '<=':
+                        $query->where($key, $operator, $value);
+                        break;
+                        // Add more cases for additional operators as needed.
+                    default:
+                        // Handle other operators or throw an exception if needed.
+                        break;
+                }
+            }
+        }
     }
 
     /**
