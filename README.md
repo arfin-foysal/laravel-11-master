@@ -27,7 +27,7 @@
 
 ## About Me
 - **Foysal Ahmmad Arfin**
-- **Software Engineer (PHP, Python, Laravel, Django, ReactJs)**
+- **Software Engineer (PHP, Python, Laravel, Django)**
 - **Email:af.arfinfoysal@gmail.com**
 
 
