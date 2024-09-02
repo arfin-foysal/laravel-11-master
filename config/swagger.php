@@ -160,11 +160,6 @@ return [
             'name' => 'authorization',
             'in' => 'header',
         ],
-        'apiKey1' => [
-            'type' => 'apiKey',
-            'name' => 'key1',
-            'in' => 'query',
-        ],
 
         'bearerAuth' => [
             'type' => 'http',

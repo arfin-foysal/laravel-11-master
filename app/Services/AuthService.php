@@ -19,6 +19,11 @@ class AuthService
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => bcrypt($request->password),
+                'username' => $request->username,
+                'number' => $request->number,
+                'image' => $request->image,
+                'organization_id' => $request->organization_id,
+                'is_active' => $request->is_active
             ]);
 
             return $user;
@@ -38,14 +43,21 @@ class AuthService
             //     "password" => $request->password
             // ]);
 
-            $token = auth()->attempt([
-                'email' => $request->email,
-                'password' => $request->password,
-            ]);
+            // Attempt authentication with email first
+            $credentials = ['email' => $request->email_or_username, 'password' => $request->password];
+            $token = auth()->attempt($credentials);
 
+            // If email authentication fails, attempt with username
+            if (! $token) {
+                $credentials = ['username' => $request->email_or_username, 'password' => $request->password];
+                $token = auth()->attempt($credentials);
+            }
+
+            // Throw an exception if both attempts fail
             if (! $token) {
                 throw new \Exception('Invalid credentials');
             }
+
 
             $user = User::where('id', auth()->id())->first();
             $role = $user->roles()->first()->name ?? null;
