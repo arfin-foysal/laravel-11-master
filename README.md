@@ -1,4 +1,4 @@
-## CRM (Customer Relationship Management)
+## BacBon CRM (Customer Relationship Management)
 
 ## Features
 - JWT Authentication
