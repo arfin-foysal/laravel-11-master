@@ -27,8 +27,8 @@ class LoginRequest extends FormRequest
                 function ($attribute, $value, $fail) {
                     $isEmail = filter_var($value, FILTER_VALIDATE_EMAIL);
                     $column = $isEmail ? 'email' : 'username';
-    
-                    if (!\App\Models\User::where($column, $value)->exists()) {
+
+                    if (! \App\Models\User::where($column, $value)->exists()) {
                         $fail("The provided $column does not exist.");
                     }
                 },

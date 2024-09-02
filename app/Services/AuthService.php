@@ -2,11 +2,14 @@
 
 namespace App\Services;
 
+use App\Http\Traits\HelperTrait;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class AuthService
 {
+    use HelperTrait;
+
     public function __construct()
     {
         //
@@ -15,15 +18,16 @@ class AuthService
     public function register($request)
     {
         try {
+            $path = $this->fileUpload($request, 'image', 'users');
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => bcrypt($request->password),
                 'username' => $request->username,
                 'number' => $request->number,
-                'image' => $request->image,
+                'image' => $path,
                 'organization_id' => $request->organization_id,
-                'is_active' => $request->is_active
+                'is_active' => $request->is_active,
             ]);
 
             return $user;
@@ -57,7 +61,6 @@ class AuthService
             if (! $token) {
                 throw new \Exception('Invalid credentials');
             }
-
 
             $user = User::where('id', auth()->id())->first();
             $role = $user->roles()->first()->name ?? null;

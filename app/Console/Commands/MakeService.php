@@ -8,7 +8,9 @@ use Illuminate\Filesystem\Filesystem;
 class MakeService extends Command
 {
     protected $signature = 'make:service {name}';
+
     protected $description = 'Create a new service class';
+
     protected $files;
 
     public function __construct(Filesystem $files)
