@@ -27,9 +27,11 @@ class RegistrationRequest extends FormRequest
             'email' => 'required|string|email|max:100|unique:users',
             'username' => 'required|string|max:50|unique:users',
             'password' => 'required|string|min:8|confirmed',
+            'password_confirmation' => 'required|string|min:8',
             'number' => 'nullable|string|max:20|unique:users',
-            'organization_id' => 'nullable|integer|exists:organizations,id',
+            'organization_id' => 'nullable|integer',
             'is_active' => 'nullable|boolean',
+            'image' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
         ];
     }
 }

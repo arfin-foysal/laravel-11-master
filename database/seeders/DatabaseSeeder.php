@@ -31,10 +31,20 @@ class DatabaseSeeder extends Seeder
             ],
         );
 
+        $admin = User::factory()->create(
+            [
+                'name' => 'admin',
+                'email' => 'admin@example.com',
+                'username' => 'admin',
+                'password' => bcrypt('password'),
+            ]
+        );
+
         $this->call(RoleAndPermissionSeeder::class);
 
         $systemAdmin->assignRole('system-admin');
         $superAdmin->assignRole('super-admin');
+        $admin->assignRole('admin');
 
         $systemAdmin->givePermissionTo('role-and-permission-management');
     }
