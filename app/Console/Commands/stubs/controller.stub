@@ -5,7 +5,7 @@ namespace DummyNamespace;
 use App\Http\Requests\DummyStoreRequest;
 use App\Http\Requests\DummyUpdateRequest;
 use App\Services\DummyService;
-use App\Traits\HelperTrait;
+use App\Http\Traits\HelperTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
