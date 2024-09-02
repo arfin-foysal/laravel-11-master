@@ -1,0 +1,93 @@
+<?php
+
+namespace DummyNamespace;
+
+use App\Http\Requests\DummyStoreRequest;
+use App\Http\Requests\DummyUpdateRequest;
+use App\Services\DummyService;
+use App\Http\Traits\HelperTrait;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+class DummyClass extends Controller
+{
+    use HelperTrait;
+
+    private $service;
+
+    public function __construct(DummyService $service)
+    {
+        $this->service = $service;
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(Request $request): JsonResponse
+    {
+        try {
+            $data = $this->service->index($request);
+
+            return $this->successResponse($data, 'DummyResource data retrieved successfully!', Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return $this->errorResponse($th->getMessage(), 'Something went wrong', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(DummyStoreRequest $request): JsonResponse
+    {
+        try {
+            $resource = $this->service->store($request);
+
+            return $this->successResponse($resource, 'DummyResource created successfully!', Response::HTTP_CREATED);
+        } catch (\Throwable $th) {
+            return $this->errorResponse($th->getMessage(), 'Failed to create DummyResource', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(int $id): JsonResponse
+    {
+        try {
+            $resource = $this->service->show($id);
+
+            return $this->successResponse($resource, 'DummyResource retrieved successfully!', Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return $this->errorResponse($th->getMessage(), 'Failed to retrieve DummyResource', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(DummyUpdateRequest $request, int $id): JsonResponse
+    {
+        try {
+            $resource = $this->service->update($request, $id);
+
+            return $this->successResponse($resource, 'DummyResource updated successfully!', Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return $this->errorResponse($th->getMessage(), 'Failed to update DummyResource', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(int $id): JsonResponse
+    {
+        try {
+            $this->service->destroy($id);
+
+            return $this->successResponse(null, 'DummyResource deleted successfully!', Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return $this->errorResponse($th->getMessage(), 'Failed to delete DummyResource', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+}
