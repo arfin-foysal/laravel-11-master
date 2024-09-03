@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegistrationRequest;
 use App\Http\Traits\HelperTrait;
 use App\Services\AuthService;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class AuthController extends Controller
@@ -87,6 +89,19 @@ class AuthController extends Controller
             auth()->logout();
 
             return $this->successResponse(true, 'User logged out successfully', Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return $this->errorResponse($th->getMessage(), 'something went wrong', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // Change Password API - POST
+    public function changePassword(ChangePasswordRequest $request)
+    {
+        try {
+
+            $data = $this->authService->changePassword( $request );
+
+            return $this->successResponse($data, 'Password changed successfully', Response::HTTP_OK);
         } catch (\Throwable $th) {
             return $this->errorResponse($th->getMessage(), 'something went wrong', Response::HTTP_INTERNAL_SERVER_ERROR);
         }

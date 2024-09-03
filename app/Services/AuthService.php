@@ -118,4 +118,19 @@ class AuthService
             throw $th;
         }
     }
+
+
+    public function changePassword($request)
+    {
+        
+        try {
+            $user = auth()->user();
+            $user->password = bcrypt($request->password);
+            $user->save();
+            return $user;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
 }
