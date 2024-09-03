@@ -21,7 +21,6 @@ class DummyClass
 
         // Sorting
         $this->applySorting($query, $request);
-        
 
         // Searching
         $searchKeys = ['name']; // Define the fields you want to search by
@@ -47,8 +46,8 @@ class DummyClass
         $data = $request->only($fillable);
 
         // Handle file uploads
-        //$data['thumbnail'] = $this->fileUpload($request, 'thumbnail', 'dummyModel');
-        //$data['cover_picture'] = $this->fileUpload($request, 'cover_picture', 'dummyModel');
+        //$data['thumbnail'] = $this->ftpFileUpload($request, 'thumbnail', 'dummyModel');
+        //$data['cover_picture'] = $this->ftpFileUpload($request, 'cover_picture', 'dummyModel');
 
         // Add created_by and created_at fields for new records
         if ($isNew) {

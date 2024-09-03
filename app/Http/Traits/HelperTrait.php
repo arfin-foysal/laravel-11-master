@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 trait HelperTrait
@@ -153,6 +154,37 @@ trait HelperTrait
         return null;
     }
 
+    protected function sFileUpload($request, $fileName, $destination)
+    {
+        if ($request->hasFile($fileName)) {
+            $file = $request->file($fileName);
+            $fileName = $fileName.'-'.Str::random(6).time().'.'.$file->getClientOriginalExtension();
+            $destinationPath = trim($destination, '/');
+
+            // Store the file on the 'public' disk
+            $path = $file->storeAs($destinationPath, $fileName, 'public');
+
+            return Storage::url($path);
+        }
+
+        return null;
+    }
+
+    protected function ftpFileUpload($fullRequest, $fileName, $destination)
+    {
+        if ($fullRequest->hasFile($fileName)) {
+            $file_temp = $fullRequest->file($fileName);
+            $destinations = 'uploads/'.$destination;
+            $file_url = Storage::put($destinations, $file_temp);
+
+            return "crm/{$file_url}";
+        }
+
+        return null;
+    }
+
+    // Upload and Replace file
+
     /**
      * Create an Unauthorize JSON response.
      *
@@ -160,6 +192,12 @@ trait HelperTrait
      * @param  $fileName  (provide file name Ex: $request->image)
      * @param  $destination  (provide destination folder name Ex:'images')
      * @param  string  $oldFile  (provide old file name if you want to delete old file Ex: $userData->old_image)
+     */
+
+    /**
+     * Create an Unauthorize JSON response.
+     *
+     * @param  $file  (provide file name Ex: $request->image)
      */
     protected function fileUploadAndUpdate($request, $fileName, $destination, $oldFile = null)
     {
@@ -190,17 +228,85 @@ trait HelperTrait
         return $oldFile; // Return old file path if no new file is uploaded
     }
 
-    /**
-     * Create an Unauthorize JSON response.
-     *
-     * @param  $file  (provide file name Ex: $request->image)
-     */
+    protected function sFileUploadAndUpdate($request, $fileName, $destination, $oldFile = null)
+    {
+        if ($request->hasFile($fileName)) {
+            // Remove the old file if it exists
+            if ($oldFile) {
+                $oldFilePath = str_replace('storage/', '', $oldFile); // Remove 'storage/' prefix
+                if (Storage::disk('public')->exists($oldFilePath)) {
+                    Storage::disk('public')->delete($oldFilePath);
+                }
+            }
+
+            // Handle the new file upload
+            $file = $request->file($fileName);
+            $newFileName = $fileName.'-'.Str::random(6).time().'.'.$file->getClientOriginalExtension();
+            $destinationPath = trim($destination, '/');
+
+            // Store the file on the 'public' disk
+            $path = $file->storeAs($destinationPath, $newFileName, 'public');
+
+            return Storage::url($path);
+        }
+
+        return $oldFile; // Return old file path if no new file is uploaded
+    }
+
+    protected function ftpFileUploadAndUpdate($fullRequest, $fileName, $destination, $oldFile = null)
+    {
+        if ($fullRequest->hasFile($fileName)) {
+            // Delete old file if it exists
+            if ($oldFile) {
+                $old_image_path = 'uploads/'.$oldFile;
+                if (Storage::exists($old_image_path)) {
+                    Storage::delete($old_image_path);
+                }
+            }
+
+            // Upload new file
+            $file_temp = $fullRequest->file($fileName);
+            $destinations = 'uploads/'.$destination;
+            $file_url = Storage::put($destinations, $file_temp);
+
+            return "crm/{$file_url}";
+        }
+
+        return null;
+    }
+
+    // Delete File
+
     protected function deleteFile($file)
     {
         $filePath = public_path('uploads/'.trim($file, '/'));
 
         if (file_exists($filePath) && is_file($filePath)) {
             unlink($filePath);
+        }
+
+        return true;
+    }
+
+    protected function sDeleteFile($file)
+    {
+        // Convert the file URL to a relative path
+        $filePath = str_replace('storage/', '', $file);
+
+        // Check if the file exists on the 'public' disk and delete it
+        if (Storage::disk('public')->exists($filePath)) {
+            Storage::disk('public')->delete($filePath);
+        }
+
+        return true;
+    }
+
+    protected function ftpDeleteFile($file)
+    {
+        $file_path = 'uploads/'.$file;
+
+        if (Storage::exists($file_path)) {
+            Storage::delete($file_path);
         }
 
         return true;

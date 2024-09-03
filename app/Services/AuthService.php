@@ -27,7 +27,7 @@ class AuthService
                 'number' => $request->number,
                 'image' => $path,
                 'organization_id' => $request->organization_id,
-                'is_active' => $request->is_active,
+                'is_active' => 0,
             ]);
 
             return $user;
