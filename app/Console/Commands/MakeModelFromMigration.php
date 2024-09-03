@@ -82,33 +82,32 @@ class MakeModelFromMigration extends Command
     protected function addFillableAttributes($name, $fillable)
     {
         $path = app_path("Models/{$name}.php");
-    
+
         if ($this->fileSystem->exists($path)) {
             $content = $this->fileSystem->get($path);
-    
+
             // Add fillable attributes
             $fillableArray = explode(',', $fillable);
             $fillableString = implode("', '", array_map('trim', $fillableArray));
             $fillableString = "['".$fillableString."']";
-    
+
             $fillableTemplate = "
     
         protected \$fillable = $fillableString;
             ";
-    
+
             // Add use SoftDeletes; after use HasFactory;
             if (Str::contains($content, 'use HasFactory;')) {
                 $content = str_replace('use HasFactory;', "use HasFactory;\nuse SoftDeletes;\n$fillableTemplate", $content);
             } else {
                 $content = str_replace('use Illuminate\\Database\\Eloquent\\Model;', "use Illuminate\\Database\\Eloquent\\Model;\nuse SoftDeletes;", $content);
             }
-    
+
             $this->fileSystem->put($path, $content);
         } else {
             $this->error("Model file does not exist: $path");
         }
     }
-    
 
     protected function createRequestFiles($name, $columns)
     {
