@@ -138,15 +138,11 @@ return [
     'servers' => [
         [
             'url' => env('APP_URL'),
-            'description' => 'localhost',
+            'description' => 'base url',
         ],
         [
-            'url' => 'http://103.209.40.89:1212',
-            'description' => 'production',
-        ],
-        [
-            'url' => 'http://118.179.7.83',
-            'description' => 'media server',
+            'url' => env('APP_MEDIA_URL'),
+            'description' => 'media url',
         ]
     ],
 
