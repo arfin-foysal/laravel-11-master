@@ -95,7 +95,7 @@ class AuthController extends Controller
     }
 
     // Change Password API - POST
-    public function changePassword(ChangePasswordRequest $request)
+     public function changePassword(ChangePasswordRequest $request)
     {
         try {
 

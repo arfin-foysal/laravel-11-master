@@ -169,20 +169,26 @@ trait HelperTrait
 
         return null;
     }
-
     protected function ftpFileUpload($fullRequest, $fileName, $destination)
     {
         if ($fullRequest->hasFile($fileName)) {
             $file_temp = $fullRequest->file($fileName);
-            $destinations = 'uploads/'.$destination;
+            $destinations = 'uploads/' . $destination;
+    
+            // Create directory if it doesn't exist and set permissions
+            if (!Storage::exists($destinations)) {
+                Storage::makeDirectory($destinations);
+            }
+    
             $file_url = Storage::put($destinations, $file_temp);
-
+    
             return "crm/{$file_url}";
         }
-
+    
         return null;
     }
-
+    
+    
     // Upload and Replace file
 
     /**

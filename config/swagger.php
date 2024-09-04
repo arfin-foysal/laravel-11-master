@@ -141,9 +141,13 @@ return [
             'description' => 'localhost',
         ],
         [
-            'url' => 'http://localhost',
+            'url' => 'http://103.209.40.89:1212',
             'description' => 'production',
         ],
+        [
+            'url' => 'http://118.179.7.83',
+            'description' => 'media server',
+        ]
     ],
 
     /*
