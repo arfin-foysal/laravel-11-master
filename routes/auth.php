@@ -17,4 +17,5 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('refresh-token', [AuthController::class, 'refreshToken']);
     Route::get('logout', [AuthController::class, 'logout']);
     Route::post('change-password', [AuthController::class, 'changePassword']);
+    Route::get('details', [AuthController::class, 'details']);
 });

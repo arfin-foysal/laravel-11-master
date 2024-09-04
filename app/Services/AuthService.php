@@ -133,4 +133,26 @@ class AuthService
         }
     }
 
+
+    public function details()
+    {
+        try {
+            $user = auth()->user();
+            $role = $user->roles()->first()->name ?? null;
+            $permissions = $user->getAllPermissions()->pluck('name');
+            $extraPermissions = $user->getDirectPermissions()->pluck('name');
+            $rolePermissions = $user->getPermissionsViaRoles()->pluck('name');
+            $menus = $user->getMenus();
+            return [
+                'role' => $role,
+                'permissions' => $permissions,
+                'role_permissions' => $rolePermissions,
+                'extra_permissions' => $extraPermissions,
+                'menus' => $menus
+            ];
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
 }

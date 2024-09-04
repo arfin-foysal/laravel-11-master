@@ -106,4 +106,15 @@ class AuthController extends Controller
             return $this->errorResponse($th->getMessage(), 'something went wrong', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    public function details()
+    {
+        try {
+            $menus = $this->authService->details();
+            return $this->successResponse($menus, 'Menus', Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return $this->errorResponse($th->getMessage(), 'something went wrong', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }
