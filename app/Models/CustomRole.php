@@ -13,16 +13,4 @@ class CustomRole extends BaseRole
        'id', 'name', 'guard_name',
     ];
 
-    public function getMenus ()
-    {
-        return $this->hasMany(Menu::class, 'role_id', 'id')
-            ->select('id','organization_id', 'name','description', 'role_id', 'url', 'icon','order','is_active')
-            ->where('is_active', true)
-            ->orderBy('order')
-            ->with(['subMenus' => function ($query) {
-                $query->select('id', 'menu_id', 'organization_id', 'role_id', 'name', 'description', 'icon', 'url', 'order', 'is_active')
-                    ->where('is_active', true)
-                    ->orderBy('order');
-            }]);
-    }
 }

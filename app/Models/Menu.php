@@ -15,7 +15,7 @@ class Menu extends Model
     use OrganizationScopedTrait;
 
 
-    protected $fillable = ['organization_id', 'name','role_id', 'description', 'icon', 'url', 'order', 'created_by', 'is_active'];
+    protected $fillable = ['organization_id', 'name', 'description', 'icon', 'url', 'order', 'created_by', 'is_active'];
 
     public function subMenus()
     {
@@ -23,7 +23,7 @@ class Menu extends Model
     }
 
     public function roles()
-{
-    return $this->belongsToMany(Role::class, 'menu_has_roles');
-}
+    {
+        return $this->belongsToMany(Role::class, 'menu_has_roles', 'menu_id', 'role_id');
+    }
 }

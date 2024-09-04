@@ -28,7 +28,7 @@ class StoreSubMenuRequest extends FormRequest
             'name' => 'required|string|max:55|unique:sub_menus,name',
             'description' => 'nullable|string',
             'icon' => 'nullable|string',
-            'role_id' => 'nullable|integer',
+            'role_ids' => 'nullable|array',
             'url' => 'nullable|string',
             'order' => 'nullable|integer',
             'is_active' => 'nullable|integer',
