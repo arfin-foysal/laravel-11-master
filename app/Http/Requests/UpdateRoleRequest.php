@@ -25,7 +25,7 @@ class UpdateRoleRequest extends FormRequest
 
         return [
             'name' => 'required|string|max:55|unique:roles,name,'.$roleId,
-            'permissions' => 'nullable|array',
+            'permissions' => 'nullable|array', // pass permission name
         ];
     }
 }
