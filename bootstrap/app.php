@@ -18,7 +18,14 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->middleware('api')
                 ->name('api.')
                 ->group(base_path('routes/role-permission.php'));
+                Route::prefix('api')
+                ->middleware('api')
+                ->name('api.')
+                ->group(base_path('routes/auth.php'));
         }
+
+
+
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->group('api', [
