@@ -49,7 +49,7 @@ class UserService
         $data = $request->only($fillable);
 
         // Handle file uploads
-        $data['image'] = $this->sFileUpload($request, 'image', 'crm');
+        $data['image'] = $this->ftpFileUpload($request, 'image', 'image');
         $data['password'] = bcrypt($request->input('password'));
         //$data['cover_picture'] = $this->ftpFileUpload($request, 'cover_picture', 'user');
 
