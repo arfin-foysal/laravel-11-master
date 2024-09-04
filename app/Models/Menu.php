@@ -6,6 +6,7 @@ use App\Http\Traits\OrganizationScopedTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Permission\Models\Role;
 
 class Menu extends Model
 {
@@ -20,4 +21,9 @@ class Menu extends Model
     {
         return $this->hasMany(SubMenu::class, 'menu_id', 'id');
     }
+
+    public function roles()
+{
+    return $this->belongsToMany(Role::class, 'menu_has_roles');
+}
 }

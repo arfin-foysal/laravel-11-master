@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Menu;
 use App\Http\Traits\HelperTrait;
+use App\Models\MenuHasRole;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
@@ -36,8 +37,19 @@ class MenuService
     {
         $data = $this->prepareMenuData($request);
 
-        return Menu::create($data);
+        // Create the menu and associate roles
+        $menu = Menu::create($data);
+
+        // Sync the roles using the attach method
+
+        if (!empty($request->input('role_ids'))) {
+            $menu->roles()->sync($request->input('role_ids'));
+        }
+
+        return $menu;
+
     }
+
 
     private function prepareMenuData(Request $request, bool $isNew = true): array
     {
@@ -70,7 +82,10 @@ class MenuService
         $menu = Menu::findOrFail($id);
         $updateData = $this->prepareMenuData($request, false);
         $menu->update($updateData);
-
+        // Sync the roles using the sync method
+        if (!empty($request->input('role_ids'))) {
+            $menu->roles()->sync($request->input('role_ids'));
+        }
         return $menu;
     }
 

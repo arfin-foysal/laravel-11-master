@@ -26,7 +26,7 @@ class StoreMenuRequest extends FormRequest
         return [
             'name' => 'required|string|max:55|unique:menus,name',
             'description' => 'nullable|string',
-            'role_id' => 'nullable|integer',
+            'role_ids' => 'nullable|array',
             'icon' => 'nullable|string',
             'url' => 'nullable|string',
             'order' => 'nullable|integer',
