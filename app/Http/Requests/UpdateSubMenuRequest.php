@@ -24,13 +24,13 @@ class UpdateSubMenuRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:55|unique:sub_menus,name',
+            'name' => 'required|string|max:55|unique:sub_menus,name,' .  $this->route('sub_menu'),
             'description' => 'nullable|string',
             'icon' => 'nullable|string',
             'url' => 'nullable|string',
-            'role_id' => 'nullable|integer',
+            'role_ids' => 'nullable|array',
             'order' => 'nullable|integer',
-            'is_active' => 'nullable|integer',
+            'is_active' => 'nullable|boolean',
             'menu_id' => 'required|integer',
         ];
     }

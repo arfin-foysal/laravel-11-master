@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Http\Traits\HelperTrait;
+use App\Models\Menu;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
@@ -122,7 +123,7 @@ class AuthService
 
     public function changePassword($request)
     {
-        
+
         try {
             $user = auth()->user();
             $user->password = bcrypt($request->password);
@@ -142,7 +143,21 @@ class AuthService
             $permissions = $user->getAllPermissions()->pluck('name');
             $extraPermissions = $user->getDirectPermissions()->pluck('name');
             $rolePermissions = $user->getPermissionsViaRoles()->pluck('name');
-            $menus = $user->getMenus();
+
+            // Retrieve only active menus with their associated active submenus, ordered by 'order'
+            $menus = Menu::whereHas('roles', function ($query) use ($user) {
+                $query->whereIn('roles.id', $user->roles->pluck('id'));
+            })
+                ->select('id', 'organization_id', 'name', 'description', 'url', 'icon', 'order', 'is_active')
+                ->where('is_active', true) // Filter by active menus
+                ->orderBy('order') // Order by 'order' column
+                ->with(['subMenus' => function ($query) {
+                    $query->select('id', 'menu_id', 'organization_id', 'name', 'description', 'icon', 'url', 'order', 'is_active')
+                        ->where('is_active', true) // Filter by active submenus
+                        ->orderBy('order'); // Order submenus by 'order' column
+                }])
+                ->get();
+
             return [
                 'role' => $role,
                 'permissions' => $permissions,
@@ -154,5 +169,4 @@ class AuthService
             throw $th;
         }
     }
-
 }

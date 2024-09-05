@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('menu_id');
             $table->bigInteger('organization_id')->nullable();
-            $table->string('role_id')->nullable();
             $table->string('name');
             $table->string('description')->nullable();
             $table->string('icon')->nullable();

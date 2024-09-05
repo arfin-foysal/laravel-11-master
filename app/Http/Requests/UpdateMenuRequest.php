@@ -24,13 +24,13 @@ class UpdateMenuRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:55', 'unique:menus,name,' . $this->route('menus')],
+            'name' => ['required', 'string', 'max:55', 'unique:menus,name,' . $this->route('menu')],
             'description' => ['nullable', 'string'],
             'role_ids' => ['nullable', 'array'],
             'icon' => ['nullable', 'string'],
             'url' => ['nullable', 'string'],
             'order' => ['nullable', 'integer'],
-            'is_active' => ['nullable', 'boolean'],
+            'is_active' => ['nullable', 'integer'],
         ];
     }
 }

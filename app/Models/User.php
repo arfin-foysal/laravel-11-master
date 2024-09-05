@@ -77,16 +77,5 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    public function getMenus()
-    {
-        //get user Role
-        $role = $this->roles()->first();
-        if ($role) {
-            $role=CustomRole::find($role->id);
-            return $role->getMenus;
-        }
-        
-    }
-
 
 }
