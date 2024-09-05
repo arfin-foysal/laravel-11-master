@@ -2,10 +2,9 @@
 
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
-use App\Http\Middleware\PermissionCheckMiddleware;
 use Illuminate\Support\Facades\Route;
 
-Route::group(['middleware' => ['auth:api', PermissionCheckMiddleware::class]], function () {
+Route::group(['middleware' => ['auth:api','RPManagement']], function () {
     /* Role Route Start */
     Route::get('roles', [RoleController::class, 'index']);
     Route::post('roles', [RoleController::class, 'store'])->name('roles.store'); //create roles and assign permissions

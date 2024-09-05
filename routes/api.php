@@ -5,7 +5,7 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\SubMenuController;
 use Illuminate\Support\Facades\Route;
 
-
+// ,'role:admin'
 // Protected Routes
 Route::group(['middleware' => ['auth:api']], function () {
     Route::apiResource('users', UserController::class);
