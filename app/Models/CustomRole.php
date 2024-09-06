@@ -9,7 +9,6 @@ class CustomRole extends BaseRole
 {
     use HasFactory;
 
-    protected $fillable = [
-        'name', 'guard_name',
-    ];
+    protected $fillable = ['id', 'name', 'guard_name'];
+
 }

@@ -18,12 +18,25 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->middleware('api')
                 ->name('api.')
                 ->group(base_path('routes/role-permission.php'));
+                Route::prefix('api')
+                ->middleware('api')
+                ->name('api.')
+                ->group(base_path('routes/auth.php'));
         }
+
+
+
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->group('api', [
             \G4T\Swagger\Middleware\SetJsonResponseMiddleware::class,
         ]);
+        $middleware->alias([
+            'role' => \App\Http\Middleware\RoleCheckMiddleware::class,
+            'RPManagement' => \App\Http\Middleware\PermissionCheckMiddleware::class,
+        ]);
+
+
     })
 
     ->withExceptions(function (Exceptions $exceptions) {
