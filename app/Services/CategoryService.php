@@ -1,21 +1,31 @@
 <?php
 
-namespace DummyNamespace;
+namespace App\Services;
 
-use App\Models\DummyModel;
+use App\Models\Category;
 use App\Http\Traits\HelperTrait;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
-class DummyClass
+class CategoryService
 {
     use HelperTrait;
 
     public function index(Request $request): Collection|LengthAwarePaginator|array
     {
-        $query = DummyModel::query();
+        $query = Category::query();
+
+        $query->when($request->has('is_active'), function ($q) use ($request) {
+            $q->where('is_active', $request->input('is_active'));
+        }, function ($q) {
+            $q->where('is_active', true);
+        });
+
+        $query->with(['children' => function ($q) {
+            $q->with('children');
+        }]);
 
         // Select specific columns
         $query->select(['*']);
@@ -33,22 +43,22 @@ class DummyClass
 
     public function store(Request $request)
     {
-        $data = $this->prepareDummyModelData($request);
+        $data = $this->prepareCategoryData($request);
 
-        return DummyModel::create($data);
+        return Category::create($data);
     }
 
-    private function prepareDummyModelData(Request $request, bool $isNew = true): array
+    private function prepareCategoryData(Request $request, bool $isNew = true): array
     {
         // Get the fillable fields from the model
-        $fillable = (new DummyModel())->getFillable();
+        $fillable = (new Category())->getFillable();
 
         // Extract relevant fields from the request dynamically
         $data = $request->only($fillable);
 
         // Handle file uploads
-        //$data['thumbnail'] = $this->ftpFileUpload($request, 'thumbnail', 'dummyModel');
-        //$data['cover_picture'] = $this->ftpFileUpload($request, 'cover_picture', 'dummyModel');
+        $data['image'] = $this->ftpFileUpload($request, 'image', 'image');
+        //$data['cover_picture'] = $this->ftpFileUpload($request, 'cover_picture', 'category');
 
         // Add created_by and created_at fields for new records
         if ($isNew) {
@@ -59,26 +69,28 @@ class DummyClass
         return $data;
     }
 
-    public function show(int $id): DummyModel
+    public function show(int $id): Category
     {
-        return DummyModel::findOrFail($id);
+        return Category::with(['children' => ['children']])->findOrFail($id);
     }
+
+
 
     public function update(Request $request, int $id)
     {
-        $dummyModel = DummyModel::findOrFail($id);
-        $updateData = $this->prepareDummyModelData($request, false);
-        $dummyModel->update($updateData);
+        $category = Category::findOrFail($id);
+        $updateData = $this->prepareCategoryData($request, false);
+        $category->update($updateData);
 
-        return $dummyModel;
+        return $category;
     }
 
     public function destroy(int $id): bool
     {
-        $dummyModel = DummyModel::findOrFail($id);
-        $dummyModel->name .= '_' . Str::random(8);
-        $dummyModel->deleted_at = now();
+        $category = Category::findOrFail($id);
+        $category->name .= '_' . Str::random(8);
+        $category->deleted_at = now();
 
-        return $dummyModel->save();
+        return $category->save();
     }
 }

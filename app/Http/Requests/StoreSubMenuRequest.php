@@ -4,15 +4,17 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateRoleRequest extends FormRequest
+class StoreSubMenuRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
+    
     public function authorize(): bool
     {
         return true;
     }
+            
 
     /**
      * Get the validation rules that apply to the request.
@@ -21,11 +23,17 @@ class UpdateRoleRequest extends FormRequest
      */
     public function rules(): array
     {
-        $roleId = $this->route('id');
 
         return [
-            'name' => 'required|string|max:55|unique:roles,name,'.$roleId,
-            'permissions' => 'nullable|array', // pass permission name
+            'name' => 'required|string|max:55|unique:sub_menus,name',
+            'description' => 'nullable|string',
+            'icon' => 'nullable|string',
+            'role_ids' => 'nullable|array',
+            'url' => 'nullable|string',
+            'order' => 'nullable|integer',
+            'is_active' => 'nullable|integer',
+            'menu_id' => 'required|integer',
+
         ];
     }
 }

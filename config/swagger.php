@@ -138,12 +138,12 @@ return [
     'servers' => [
         [
             'url' => env('APP_URL'),
-            'description' => 'localhost',
+            'description' => 'base url',
         ],
         [
-            'url' => 'http://localhost',
-            'description' => 'production',
-        ],
+            'url' => env('APP_MEDIA_URL'),
+            'description' => 'media url',
+        ]
     ],
 
     /*
@@ -159,11 +159,6 @@ return [
             'type' => 'apiKey',
             'name' => 'authorization',
             'in' => 'header',
-        ],
-        'apiKey1' => [
-            'type' => 'apiKey',
-            'name' => 'key1',
-            'in' => 'query',
         ],
 
         'bearerAuth' => [

@@ -23,7 +23,7 @@ class AssignRolePermissionRequest extends FormRequest
     {
         return [
             'role_id' => 'required|integer',
-            'permissions' => 'required|array|min:1',
+            'permissions' => 'required|array|min:1',// pass permission name
         ];
     }
 }

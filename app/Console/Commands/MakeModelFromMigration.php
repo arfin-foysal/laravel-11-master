@@ -92,11 +92,16 @@ class MakeModelFromMigration extends Command
             $fillableString = "['".$fillableString."']";
 
             $fillableTemplate = "
-
-    protected \$fillable = $fillableString;
+    
+        protected \$fillable = $fillableString;
             ";
 
-            $content = str_replace('use HasFactory;', "use HasFactory;$fillableTemplate", $content);
+            // Add use SoftDeletes; after use HasFactory;
+            if (Str::contains($content, 'use HasFactory;')) {
+                $content = str_replace('use HasFactory;', "use HasFactory;\nuse SoftDeletes;\n$fillableTemplate", $content);
+            } else {
+                $content = str_replace('use Illuminate\\Database\\Eloquent\\Model;', "use Illuminate\\Database\\Eloquent\\Model;\nuse SoftDeletes;", $content);
+            }
 
             $this->fileSystem->put($path, $content);
         } else {

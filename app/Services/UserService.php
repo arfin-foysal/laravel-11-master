@@ -1,21 +1,23 @@
 <?php
 
-namespace DummyNamespace;
+namespace App\Services;
 
-use App\Models\DummyModel;
+use App\Models\User;
 use App\Http\Traits\HelperTrait;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
-class DummyClass
+
+class UserService
 {
     use HelperTrait;
 
     public function index(Request $request): Collection|LengthAwarePaginator|array
     {
-        $query = DummyModel::query();
+        $query = User::query();
+        $query->whereNotIn('id', [auth()->user()->id, 1, 2]);
 
         // Select specific columns
         $query->select(['*']);
@@ -33,22 +35,23 @@ class DummyClass
 
     public function store(Request $request)
     {
-        $data = $this->prepareDummyModelData($request);
+        $data = $this->prepareUserData($request);
 
-        return DummyModel::create($data);
+        return User::create($data);
     }
 
-    private function prepareDummyModelData(Request $request, bool $isNew = true): array
+    private function prepareUserData(Request $request, bool $isNew = true): array
     {
         // Get the fillable fields from the model
-        $fillable = (new DummyModel())->getFillable();
+        $fillable = (new User())->getFillable();
 
         // Extract relevant fields from the request dynamically
         $data = $request->only($fillable);
 
         // Handle file uploads
-        //$data['thumbnail'] = $this->ftpFileUpload($request, 'thumbnail', 'dummyModel');
-        //$data['cover_picture'] = $this->ftpFileUpload($request, 'cover_picture', 'dummyModel');
+        $data['image'] = $this->ftpFileUpload($request, 'image', 'image');
+        $data['password'] = bcrypt($request->input('password'));
+        //$data['cover_picture'] = $this->ftpFileUpload($request, 'cover_picture', 'user');
 
         // Add created_by and created_at fields for new records
         if ($isNew) {
@@ -59,26 +62,27 @@ class DummyClass
         return $data;
     }
 
-    public function show(int $id): DummyModel
+    public function show(int $id): User
     {
-        return DummyModel::findOrFail($id);
+        return User::whereNotIn('id', [auth()->user()->id, 1, 2])
+            ->findOrFail($id);
     }
 
     public function update(Request $request, int $id)
     {
-        $dummyModel = DummyModel::findOrFail($id);
-        $updateData = $this->prepareDummyModelData($request, false);
-        $dummyModel->update($updateData);
+        $user = User::findOrFail($id);
+        $updateData = $this->prepareUserData($request, false);
+        $user->update($updateData);
 
-        return $dummyModel;
+        return $user;
     }
 
     public function destroy(int $id): bool
     {
-        $dummyModel = DummyModel::findOrFail($id);
-        $dummyModel->name .= '_' . Str::random(8);
-        $dummyModel->deleted_at = now();
+        $user = User::findOrFail($id);
+        $user->name .= '_' . Str::random(8);
+        $user->deleted_at = now();
 
-        return $dummyModel->save();
+        return $user->save();
     }
 }

@@ -175,6 +175,9 @@ class RoleService
             if (! $role) {
                 throw new \Exception('Role not found.');
             }
+            if (! $role->hasPermissionTo($request->permission_id)) {
+                throw new \Exception('Permission already removed.');
+            }
             $role->revokePermissionTo($request->permission_id);
 
             DB::commit();

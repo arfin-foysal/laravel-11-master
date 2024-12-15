@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateRoleRequest extends FormRequest
+class ChangePasswordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,11 +21,9 @@ class UpdateRoleRequest extends FormRequest
      */
     public function rules(): array
     {
-        $roleId = $this->route('id');
-
         return [
-            'name' => 'required|string|max:55|unique:roles,name,'.$roleId,
-            'permissions' => 'nullable|array', // pass permission name
+            'password' => ['required','confirmed','string', 'min:8'],
+            'password_confirmation' => ['required','string', 'min:8'],
         ];
     }
 }
