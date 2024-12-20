@@ -4,7 +4,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\SubMenuController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\BrandController;
+use App\Http\Controllers\Tenancy\TenancyRegisterController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -18,6 +18,6 @@ Route::group(['middleware' => ['auth:api',]], function () {
     Route::apiResource('categories', CategoryController::class);
 
 
-
-
 });
+// Public Routes
+Route::post('tenancy-register', [TenancyRegisterController::class, 'store']);
