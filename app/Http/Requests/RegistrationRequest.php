@@ -29,7 +29,6 @@ class RegistrationRequest extends FormRequest
             'password' => 'required|string|min:8|confirmed',
             'password_confirmation' => 'required|string|min:8',
             'number' => 'nullable|string|max:20|unique:users',
-            'organization_id' => 'nullable|integer',
             'image' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
         ];
     }

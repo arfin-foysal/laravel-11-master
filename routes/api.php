@@ -5,6 +5,7 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\SubMenuController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\Tenancy\TenancyRegisterController;
+use App\Models\Tenant;
 use Illuminate\Support\Facades\Route;
 
 
@@ -21,3 +22,4 @@ Route::group(['middleware' => ['auth:api',]], function () {
 });
 // Public Routes
 Route::post('tenancy-register', [TenancyRegisterController::class, 'store']);
+

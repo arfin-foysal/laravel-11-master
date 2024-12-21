@@ -23,9 +23,13 @@ class StoreTenancyRegister extends FormRequest
     {
         return [
             'name' => 'required|string|max:55',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:tenants,email',
             'domain' => 'required|string|unique:domains,domain',
             'password' => 'required|string|min:8',
+            'company' => 'nullable|string',
+            'username' => 'nullable|string|unique:tenants,username',
+            'number' => 'nullable|string|unique:tenants,number',
+            'image' => 'nullable',
         ];
     }
 }

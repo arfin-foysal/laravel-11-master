@@ -27,7 +27,6 @@ class AuthService
                 'username' => $request->username,
                 'number' => $request->number,
                 'image' => $path,
-                'organization_id' => $request->organization_id,
                 'is_active' => 0,
             ]);
 
@@ -148,11 +147,11 @@ class AuthService
             $menus = Menu::whereHas('roles', function ($query) use ($user) {
                 $query->whereIn('roles.id', $user->roles->pluck('id'));
             })
-                ->select('id', 'organization_id', 'name', 'description', 'url', 'icon', 'order', 'is_active')
+                ->select('id', 'name', 'description', 'url', 'icon', 'order', 'is_active')
                 ->where('is_active', true) // Filter by active menus
                 ->orderBy('order') // Order by 'order' column
                 ->with(['subMenus' => function ($query) {
-                    $query->select('id', 'menu_id', 'organization_id', 'name', 'description', 'icon', 'url', 'order', 'is_active')
+                    $query->select('id', 'menu_id', 'name', 'description', 'icon', 'url', 'order', 'is_active')
                         ->where('is_active', true) // Filter by active submenus
                         ->orderBy('order'); // Order submenus by 'order' column
                 }])

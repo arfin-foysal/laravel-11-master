@@ -3,7 +3,6 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Http\Traits\OrganizationScopedTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -14,7 +13,6 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable implements JWTSubject
 {
     use HasFactory, HasRoles, Notifiable,SoftDeletes;
-    use OrganizationScopedTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -28,7 +26,6 @@ class User extends Authenticatable implements JWTSubject
         'username',
         'number',
         'image',
-        'organization_id',
         'created_by',
         'is_active',
     ];

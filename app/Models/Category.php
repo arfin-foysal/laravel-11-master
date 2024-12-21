@@ -14,7 +14,7 @@ class Category extends Model
     use HelperTrait;
 
 
-    protected $fillable = ['parent_id','image','name', 'description', 'is_active', 'created_by', 'organization_id'];
+    protected $fillable = ['parent_id','image','name', 'description', 'is_active', 'created_by'];
 
     public function children()
     {

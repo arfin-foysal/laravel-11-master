@@ -19,7 +19,6 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->boolean('is_active')->default(1);
             $table->bigInteger('created_by')->nullable();
-            $table->bigInteger('organization_id')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
